@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
+
 namespace terver_3
 {
     public partial class Form1 : Form
@@ -17,6 +18,7 @@ namespace terver_3
         private List<double> norm_distr;
         private Random random;
         int istype = 0;
+        int sample = 0;
         public Form1()
         {
             InitializeComponent();
@@ -31,6 +33,16 @@ namespace terver_3
         {
 
         }
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            istype = 2;
+            sample = 500;
+        }
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            istype = 1;
+            sample = 50;
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -41,6 +53,8 @@ namespace terver_3
             double deviation = 6;  //среднеквадратичное отклонение
             double expectation = 13;  //мат. ожидание
             double variance = 169;   // дисперсия (этот параметр меняется 
+           
+
             for (int i = 0; i < 500; i++)
             {                                                                                                   //штука для нормального распредления 
                 for (int j = 0; j < n; j++)
@@ -50,7 +64,47 @@ namespace terver_3
                 }
                 z = (v - (n / 2)) / Math.Sqrt(n / 12);
                 norm_distr.Add(z * deviation + expectation);  //моделирование СВ с нормальным законом распределения
+                v = 0;
             }
+
+
+            for (int i = 0; i <= (20 * sample); i++)
+            {
+                double x = random.NextDouble();
+                if (i % 20 == 0) u_distr.Add(x);
+            }
+
+
+
+
+            chart1.Series[0].Points.Clear();
+            int intervals = (int)Math.Ceiling(1 + Math.Log(sample, 2)); //количество интервалов (по правилу Стёрджеса). 
+            //Округление в большую сторону
+
+
+
+            norm_distr.Sort();//сортировка списка значений СВ 
+
+            double intervalLength = (norm_distr.Max() - norm_distr.Min()) / intervals, //длина интервала (ширина столбика гистограммы)
+                   rightBorder = norm_distr.Min() + intervalLength; //правая граница столбика гистограммы
+
+            for (int j = 0, i = 0, counter = 0; i < norm_distr.Count; i++, counter++)  //counter - счётчик значений, входящих в диапазон
+            {
+                if (norm_distr[i] > rightBorder || i + 1 >= u_distr.Count)  //если число не вошло в диапазон 
+                {
+                    double y = (1 / (deviation * Math.Sqrt(2 * Math.PI))) * Math.Exp((norm_distr[i] - expectation) * (norm_distr[i] - expectation) * (-1) / (2 * variance));  //(double)counter / newNormalNumb.Count / intervalLength; // частота появления СВ
+
+                    chart1.Series[0].Points.AddXY(Math.Round(norm_distr[i], 3), y);
+
+                    j++;   //прибавляем j постфиксным инкрементом
+                    rightBorder = norm_distr.Min() + (j + 1) * intervalLength;  // вычисляем следующую границу
+                    counter = 0; //зануляем счётчик
+                }
+            }
+
+
+
+
 
 
 
@@ -110,50 +164,50 @@ namespace terver_3
 
 
 
-                    // Мера надёжности 0.85:
+                        // Мера надёжности 0.85:
 
-                    //пункт 1 - подсчёт мат. ожидания при известной дисперсии
+                        //пункт 1 - подсчёт мат. ожидания при известной дисперсии
 
-                    double intervMin500_085_1 = Math.Round(norm_distr.Sum() / norm_distr.Count - Math.Sqrt(variance / 500) * 1.43953147093846, 3);   //Квантили стандартного нормального распределения вычислены через таблицы Excel
-                    double intervMax500_085_1 = Math.Round(norm_distr.Sum() / norm_distr.Count + Math.Sqrt(variance / 500) * 1.43953147093846, 3);
-                    textBox3.Text = intervMin500_085_1.ToString();
-                    textBox4.Text = intervMax500_085_1.ToString();
+                        double intervMin500_085_1 = Math.Round(norm_distr.Sum() / norm_distr.Count - Math.Sqrt(variance / 500) * 1.43953147093846, 3);   //Квантили стандартного нормального распределения вычислены через таблицы Excel
+                        double intervMax500_085_1 = Math.Round(norm_distr.Sum() / norm_distr.Count + Math.Sqrt(variance / 500) * 1.43953147093846, 3);
+                        textBox3.Text = intervMin500_085_1.ToString();
+                        textBox4.Text = intervMax500_085_1.ToString();
 
-                    //пункт 2  - подсчёт мат. ожидания при неизвестной дисперсии
+                        //пункт 2  - подсчёт мат. ожидания при неизвестной дисперсии
 
-                    tempSum2 = 0;
-                    for (int i = 0; i < 500; i++) tempSum2 += (norm_distr[i] - norm_distr.Sum() / norm_distr.Count) * (norm_distr[i] - norm_distr.Sum() / norm_distr.Count);
-                    S = Math.Sqrt(tempSum2 / 499);
-                    double intervMin500_085_2 = Math.Round(norm_distr.Sum() / norm_distr.Count - S / Math.Sqrt(500) * 1.44175067755033, 3);   //Квантили распределения Стьюдента вычислены через таблицы Excel
-                    double intervMax500_085_2 = Math.Round(norm_distr.Sum() / norm_distr.Count + S / Math.Sqrt(500) * 1.44175067755033, 3);
-                    textBox7.Text = intervMin500_085_2.ToString();
-                    textBox8.Text = intervMax500_085_2.ToString();
+                        tempSum2 = 0;
+                        for (int i = 0; i < 500; i++) tempSum2 += (norm_distr[i] - norm_distr.Sum() / norm_distr.Count) * (norm_distr[i] - norm_distr.Sum() / norm_distr.Count);
+                        S = Math.Sqrt(tempSum2 / 499);
+                        double intervMin500_085_2 = Math.Round(norm_distr.Sum() / norm_distr.Count - S / Math.Sqrt(500) * 1.44175067755033, 3);   //Квантили распределения Стьюдента вычислены через таблицы Excel
+                        double intervMax500_085_2 = Math.Round(norm_distr.Sum() / norm_distr.Count + S / Math.Sqrt(500) * 1.44175067755033, 3);
+                        textBox7.Text = intervMin500_085_2.ToString();
+                        textBox8.Text = intervMax500_085_2.ToString();
 
-                    //пункт 3 - подсчёт дисперсии при известном мат. ожидании
+                        //пункт 3 - подсчёт дисперсии при известном мат. ожидании
 
-                    tempSum3 = 0;
-                    for (int i = 0; i < 500; i++) tempSum3 += (norm_distr[i] - expectation) * (norm_distr[i] - expectation);
-                    double intervMin500_085_3 = Math.Round(tempSum3 / 546.211781347504, 3);
-                    double intervMax500_085_3 = Math.Round(tempSum3 / 455.217661070988, 3);
-                    textBox11.Text = intervMin500_085_3.ToString();
-                    textBox12.Text = intervMax500_085_3.ToString();
+                        tempSum3 = 0;
+                        for (int i = 0; i < 500; i++) tempSum3 += (norm_distr[i] - expectation) * (norm_distr[i] - expectation);
+                        double intervMin500_085_3 = Math.Round(tempSum3 / 546.211781347504, 3);
+                        double intervMax500_085_3 = Math.Round(tempSum3 / 455.217661070988, 3);
+                        textBox11.Text = intervMin500_085_3.ToString();
+                        textBox12.Text = intervMax500_085_3.ToString();
 
-                    //пункт 4 - подсчёт дисперсии при неизвестном мат. ожидании
+                        //пункт 4 - подсчёт дисперсии при неизвестном мат. ожидании
 
-                    tempSum4 = 0;
-                    for (int i = 0; i < 500; i++) tempSum4 += (norm_distr[i] - norm_distr.Sum() / norm_distr.Count) * (norm_distr[i] - norm_distr.Sum() / norm_distr.Count);
-                    S2 = tempSum2 / 499;
-                    double intervMin500_085_4 = Math.Round(499 * S2 / 545.16621140109, 3);
-                    double intervMax500_085_4 = Math.Round(499 * S2 / 454.26323056485, 3);
-                    textBox15.Text = intervMin500_085_4.ToString();
-                    textBox16.Text = intervMax500_085_4.ToString();
+                        tempSum4 = 0;
+                        for (int i = 0; i < 500; i++) tempSum4 += (norm_distr[i] - norm_distr.Sum() / norm_distr.Count) * (norm_distr[i] - norm_distr.Sum() / norm_distr.Count);
+                        S2 = tempSum2 / 499;
+                        double intervMin500_085_4 = Math.Round(499 * S2 / 545.16621140109, 3);
+                        double intervMax500_085_4 = Math.Round(499 * S2 / 454.26323056485, 3);
+                        textBox15.Text = intervMin500_085_4.ToString();
+                        textBox16.Text = intervMax500_085_4.ToString();
 
 
 
                         break;
 
-                }
-                    case 2 :
+                    }
+                case 2:
                     {
                         /*Выборка 50*/
 
@@ -193,7 +247,8 @@ namespace terver_3
 
                         //пункт 4 - подсчёт дисперсии при неизвестном мат. ожидании
                         double tempSum4 = 0;
-                        for (int i = 0; i < 50; i++) {
+                        for (int i = 0; i < 50; i++)
+                        {
                             tempSum4 += (norm_distr[i] - norm_distr.Sum() / norm_distr.Count) * (norm_distr[i] - norm_distr.Sum() / norm_distr.Count);
                         }
                         double S2 = tempSum2 / 49;
@@ -214,7 +269,8 @@ namespace terver_3
 
                         //пункт 2 - подсчёт мат. ожидания при неизвестной дисперсии
                         tempSum2 = 0;
-                        for (int i = 0; i < 50; i++) {
+                        for (int i = 0; i < 50; i++)
+                        {
                             tempSum2 += (norm_distr[i] - norm_distr.Sum() / norm_distr.Count) * (norm_distr[i] - norm_distr.Sum() / norm_distr.Count);
                         }
                         S = Math.Sqrt(tempSum2 / 49);
@@ -252,63 +308,43 @@ namespace terver_3
                         break;
                     }
 
+            }
 
 
 
-                    /*int intervals = (int)Math.Ceiling(1 + Math.Log(choice, 2 )); //количество интервалов (по правилу Стёрджеса). 
-            //Округление в большую сторону
 
 
 
-            newNormalNumb.Sort();//сортировка списка значений СВ 
+        }
 
-            double intervalLength = (newNormalNumb.Max() - newNormalNumb.Min()) / intervals, //длина интервала (ширина столбика гистограммы)
-                   rightBorder = newNormalNumb.Min() + intervalLength; //правая граница столбика гистограммы
 
-            for (int j = 0, i = 0, counter = 0; i < newNormalNumb.Count; i++, counter++)  //counter - счётчик значений, входящих в диапазон
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           
+
+            private void textBox1_TextChanged(object sender, EventArgs e)
             {
-                if (newNormalNumb[i] > rightBorder || i + 1 >= uniformNumb.Count)  //если число не вошло в диапазон 
-                {
-                    double y = (1 / (deviation * Math.Sqrt(2 * Math.PI))) * Math.Exp((newNormalNumb[i] - expectation) * (newNormalNumb[i] - expectation) * (-1) / (2 * variance));  //(double)counter / newNormalNumb.Count / intervalLength; // частота появления СВ
-
-                    chart1.Series[0].Points.AddXY(Math.Round(newNormalNumb[i], 3), y);
-
-                    j++;   //прибавляем j постфиксным инкрементом
-                    rightBorder = newNormalNumb.Min() + (j + 1) * intervalLength;  // вычисляем следующую границу
-                    counter = 0; //зануляем счётчик
-                }
-            }
-        }
-                    */
-
-
-
 
             }
-        }
 
-    
+            private void maskedTextBox3_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+            {
 
+            }
 
-
-
-
-
-
-
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void maskedTextBox3_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-
-        }
+           
+        
     }
 }
