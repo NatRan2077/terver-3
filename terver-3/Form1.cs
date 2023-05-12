@@ -49,10 +49,11 @@ namespace terver_3
             u_distr = new List<double>();  //равномерное распределение
             norm_distr = new List<double>();   //нормальное распределение
             random = new Random();
-            double z, v = 0, n = 20; // n - параметр
+            double z, v = 0; 
+            double n = 20; // n - параметр
             double deviation = 6;  //среднеквадратичное отклонение
             double expectation = 13;  //мат. ожидание
-            double variance = 169;   // дисперсия (этот параметр меняется 
+            double variance = 169;   // дисперсия 
            
 
             for (int i = 0; i < 500; i++)
@@ -78,9 +79,9 @@ namespace terver_3
 
 
             chart1.Series[0].Points.Clear();
-            int intervals = (int)Math.Ceiling(1 + Math.Log(sample, 2)); //количество интервалов (по правилу Стёрджеса). 
-            //Округление в большую сторону
-
+            int intervals = (int)Math.Ceiling(1 + Math.Log(sample, 2)); //количество интервалов по правилу Стёрджеса 
+            
+           
 
 
             norm_distr.Sort();//сортировка списка значений СВ 
@@ -115,15 +116,15 @@ namespace terver_3
                     {
                         // Мера надёжности 0.95:
 
-                        //пункт 1 - подсчёт мат. ожидания при известной дисперсии
+                        //пункт 1 - подсчёт мат. ожидания при известной дисперсии.Квантили стандартного нормального распределения вычислены через таблицы Excel
 
-                        double intervMin500_095_1 = Math.Round(norm_distr.Sum() / norm_distr.Count - Math.Sqrt(variance / 500) * 1.95996398454005, 3),   //Квантили стандартного нормального распределения вычислены через таблицы Excel
-                               intervMax500_095_1 = Math.Round(norm_distr.Sum() / norm_distr.Count + Math.Sqrt(variance / 500) * 1.95996398454005, 3);
-                        textBox1.Text = intervMin500_095_1.ToString();
-                        textBox2.Text = intervMax500_095_1.ToString();
+                        double intervMin500_095 = Math.Round(norm_distr.Sum() / norm_distr.Count - Math.Sqrt(variance / 500) * 1.95996398454005, 3),  
+                               intervMax500_095 = Math.Round(norm_distr.Sum() / norm_distr.Count + Math.Sqrt(variance / 500) * 1.95996398454005, 3);
+                        textBox1.Text = intervMin500_095.ToString();
+                        textBox2.Text = intervMax500_095.ToString();
 
 
-                        //пункт 2 - подсчёт мат. ожидания при неизвестной дисперсии
+                        //пункт 2 - подсчёт мат. ожидания при неизвестной дисперсии.Квантили распределения Стьюдента вычислены через таблицы Excel
 
                         double tempSum2 = 0;
                         for (int i = 0; i < 500; i++)
@@ -131,23 +132,23 @@ namespace terver_3
                             tempSum2 += (norm_distr[i] - norm_distr.Sum() / norm_distr.Count) * (norm_distr[i] - norm_distr.Sum() / norm_distr.Count);
                         }
                         double S = Math.Sqrt(tempSum2 / 499);
-                        double intervMin500_095_2 = Math.Round(norm_distr.Sum() / norm_distr.Count - S / Math.Sqrt(500) * 1.96472939098768, 3),   //Квантили распределения Стьюдента вычислены через таблицы Excel
-                               intervMax500_095_2 = Math.Round(norm_distr.Sum() / norm_distr.Count + S / Math.Sqrt(500) * 1.96472939098768, 3);
-                        textBox5.Text = intervMin500_095_2.ToString();
-                        textBox6.Text = intervMax500_095_2.ToString();
+                        double intervMin500_095_1 = Math.Round(norm_distr.Sum() / norm_distr.Count - S / Math.Sqrt(500) * 1.96472939098768, 3),   
+                               intervMax500_095_1 = Math.Round(norm_distr.Sum() / norm_distr.Count + S / Math.Sqrt(500) * 1.96472939098768, 3);
+                        textBox5.Text = intervMin500_095_1.ToString();
+                        textBox6.Text = intervMax500_095_1.ToString();
 
 
-                        //пункт 3 - подсчёт дисперсии при известном мат. ожидании
+                        //пункт 3 - подсчёт дисперсии при известном мат. ожидании.Квантили распределения ХИ - квадрат вычислены через таблицы Excel
 
                         double tempSum3 = 0;
                         for (int i = 0; i < 500; i++)
                         {
                             tempSum3 += (norm_distr[i] - expectation) * (norm_distr[i] - expectation);
                         }
-                        double intervMin500_095_3 = Math.Round(tempSum3 / 563.851529344285, 3); //Квантили распределения ХИ - квадрат вычислены через таблицы Excel
-                        double intervMax500_095_3 = Math.Round(tempSum3 / 439.935991261875, 3);
-                        textBox9.Text = intervMin500_095_3.ToString();
-                        textBox10.Text = intervMax500_095_3.ToString();
+                        double intervMin500_095_2 = Math.Round(tempSum3 / 563.851529344285, 3); 
+                        double intervMax500_095_2 = Math.Round(tempSum3 / 439.935991261875, 3);
+                        textBox9.Text = intervMin500_095_2.ToString();
+                        textBox10.Text = intervMax500_095_2.ToString();
 
                         //пункт 4 - подсчёт дисперсии при неизвестном мат. ожидании
 
@@ -166,19 +167,19 @@ namespace terver_3
 
                         // Мера надёжности 0.85:
 
-                        //пункт 1 - подсчёт мат. ожидания при известной дисперсии
+                        //пункт 1 - подсчёт мат. ожидания при известной дисперсии.Квантили стандартного нормального распределения вычислены через таблицы Excel
 
-                        double intervMin500_085_1 = Math.Round(norm_distr.Sum() / norm_distr.Count - Math.Sqrt(variance / 500) * 1.43953147093846, 3);   //Квантили стандартного нормального распределения вычислены через таблицы Excel
+                        double intervMin500_085_1 = Math.Round(norm_distr.Sum() / norm_distr.Count - Math.Sqrt(variance / 500) * 1.43953147093846, 3);   
                         double intervMax500_085_1 = Math.Round(norm_distr.Sum() / norm_distr.Count + Math.Sqrt(variance / 500) * 1.43953147093846, 3);
                         textBox3.Text = intervMin500_085_1.ToString();
                         textBox4.Text = intervMax500_085_1.ToString();
 
-                        //пункт 2  - подсчёт мат. ожидания при неизвестной дисперсии
+                        //пункт 2  - подсчёт мат. ожидания при неизвестной дисперсии.Квантили распределения Стьюдента вычислены через таблицы Excel
 
                         tempSum2 = 0;
                         for (int i = 0; i < 500; i++) tempSum2 += (norm_distr[i] - norm_distr.Sum() / norm_distr.Count) * (norm_distr[i] - norm_distr.Sum() / norm_distr.Count);
                         S = Math.Sqrt(tempSum2 / 499);
-                        double intervMin500_085_2 = Math.Round(norm_distr.Sum() / norm_distr.Count - S / Math.Sqrt(500) * 1.44175067755033, 3);   //Квантили распределения Стьюдента вычислены через таблицы Excel
+                        double intervMin500_085_2 = Math.Round(norm_distr.Sum() / norm_distr.Count - S / Math.Sqrt(500) * 1.44175067755033, 3);   
                         double intervMax500_085_2 = Math.Round(norm_distr.Sum() / norm_distr.Count + S / Math.Sqrt(500) * 1.44175067755033, 3);
                         textBox7.Text = intervMin500_085_2.ToString();
                         textBox8.Text = intervMax500_085_2.ToString();
@@ -213,46 +214,46 @@ namespace terver_3
 
                         // Мера надёжности 0.95:
 
-                        //пункт 1 - подсчёт мат. ожидания при известной дисперсии
+                        //пункт 1 - подсчёт мат. ожидания при известной дисперсии.Квантили стандартного нормального распределения вычислены через таблицы Excel
 
-                        double intervMin50_095_1 = Math.Round(norm_distr.Sum() / norm_distr.Count - Math.Sqrt(variance / 50) * 1.95996398454005, 3);  //Квантили стандартного нормального распределения вычислены через таблицы Excel
+                        double intervMin50_095_1 = Math.Round(norm_distr.Sum() / norm_distr.Count - Math.Sqrt(variance / 50) * 1.95996398454005, 3);  
                         double intervMax50_095_1 = Math.Round(norm_distr.Sum() / norm_distr.Count + Math.Sqrt(variance / 50) * 1.95996398454005, 3);
                         textBox1.Text = intervMin50_095_1.ToString();
                         textBox2.Text = intervMax50_095_1.ToString();
 
-                        //пункт 2 - подсчёт мат. ожидания при неизвестной дисперсии
+                        //пункт 2 - подсчёт мат. ожидания при неизвестной дисперсии.Квантили распределения Стьюдента вычислены через таблицы Excel
                         double tempSum2 = 0;
                         for (int i = 0; i < 50; i++)
                         {
                             tempSum2 += (norm_distr[i] - norm_distr.Sum() / norm_distr.Count) * (norm_distr[i] - norm_distr.Sum() / norm_distr.Count);
                         }
                         double S = Math.Sqrt(tempSum2 / 49);
-                        double intervMin50_095_2 = Math.Round(norm_distr.Sum() / norm_distr.Count - S / Math.Sqrt(50) * 2.00957523712924, 3);   //Квантили распределения Стьюдента вычислены через таблицы Excel
+                        double intervMin50_095_2 = Math.Round(norm_distr.Sum() / norm_distr.Count - S / Math.Sqrt(50) * 2.00957523712924, 3);   
                         double intervMax50_095_2 = Math.Round(norm_distr.Sum() / norm_distr.Count + S / Math.Sqrt(50) * 2.00957523712924, 3);
                         textBox5.Text = intervMin50_095_2.ToString();
                         textBox6.Text = intervMax50_095_2.ToString();
 
 
-                        //пункт 3 - подсчёт дисперсии при известном мат. ожидании
+                        //пункт 3 - подсчёт дисперсии при известном мат. ожидании.Квантили распределения ХИ - квадрат вычислены через таблицы Excel
 
                         double tempSum3 = 0;
                         for (int i = 0; i < 50; i++)
                         {
                             tempSum3 += (norm_distr[i] - expectation) * (norm_distr[i] - expectation);
                         }
-                        double intervMin50_095_3 = Math.Round(tempSum3 / 71.4201951875064, 3); //Квантили распределения ХИ - квадрат вычислены через таблицы Excel
+                        double intervMin50_095_3 = Math.Round(tempSum3 / 71.4201951875064, 3); 
                         double intervMax50_095_3 = Math.Round(tempSum3 / 32.3573636956586, 3);
                         textBox9.Text = intervMin50_095_3.ToString();
                         textBox10.Text = intervMax50_095_3.ToString();
 
-                        //пункт 4 - подсчёт дисперсии при неизвестном мат. ожидании
+                        //пункт 4 - подсчёт дисперсии при неизвестном мат. ожидании.Квантили распределения ХИ - квадрат вычислены через таблицы Excel
                         double tempSum4 = 0;
                         for (int i = 0; i < 50; i++)
                         {
                             tempSum4 += (norm_distr[i] - norm_distr.Sum() / norm_distr.Count) * (norm_distr[i] - norm_distr.Sum() / norm_distr.Count);
                         }
                         double S2 = tempSum2 / 49;
-                        double intervMin50_095_4 = Math.Round(49 * S2 / 70.2224135664345, 3); //Квантили распределения ХИ - квадрат вычислены через таблицы Excel
+                        double intervMin50_095_4 = Math.Round(49 * S2 / 70.2224135664345, 3); 
                         double intervMax50_095_4 = Math.Round(49 * S2 / 31.5549164626671, 3);
                         textBox13.Text = intervMin50_095_4.ToString();
                         textBox14.Text = intervMax50_095_4.ToString();
