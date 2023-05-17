@@ -36,38 +36,35 @@ namespace terver_3
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             istype = 2;
-            sample = 500;
+            sample = 50;
         }
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
             istype = 1;
-            sample = 50;
+            sample = 500;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             u_distr = new List<double>();  //равномерное распределение
+
+
             norm_distr = new List<double>();   //нормальное распределение
             random = new Random();
             double z, v = 0; 
             double n = 20; // n - параметр
             double deviation = 6;  //среднеквадратичное отклонение
             double expectation = 13;  //мат. ожидание
-            double variance = 169;   // дисперсия 
+            double variance = 36;   // дисперсия 
            
 
-            for (int i = 0; i < 500; i++)
-            {                                                                                                   //штука для нормального распредления 
-                for (int j = 0; j < n; j++)
-                {
-                    double r = random.NextDouble();
-                    v += r;
-                }
-                z = (v - (n / 2)) / Math.Sqrt(n / 12);
-                norm_distr.Add(z * deviation + expectation);  //моделирование СВ с нормальным законом распределения
-                v = 0;
-            }
 
+
+            for (int i = 0; i < sample; i++)
+            {
+                double x = random.NextDouble();
+                u_distr.Add(x);
+            }
 
             for (int i = 0; i <= (20 * sample); i++)
             {
@@ -77,31 +74,6 @@ namespace terver_3
 
 
 
-
-            chart1.Series[0].Points.Clear();
-            int intervals = (int)Math.Ceiling(1 + Math.Log(sample, 2)); //количество интервалов по правилу Стёрджеса 
-            
-           
-
-
-            norm_distr.Sort();//сортировка списка значений СВ 
-
-            double intervalLength = (norm_distr.Max() - norm_distr.Min()) / intervals, //длина интервала (ширина столбика гистограммы)
-                   rightBorder = norm_distr.Min() + intervalLength; //правая граница столбика гистограммы
-
-            for (int j = 0, i = 0, counter = 0; i < norm_distr.Count; i++, counter++)  //counter - счётчик значений, входящих в диапазон
-            {
-                if (norm_distr[i] > rightBorder || i + 1 >= u_distr.Count)  //если число не вошло в диапазон 
-                {
-                    double y = (1 / (deviation * Math.Sqrt(2 * Math.PI))) * Math.Exp((norm_distr[i] - expectation) * (norm_distr[i] - expectation) * (-1) / (2 * variance));  //(double)counter / newNormalNumb.Count / intervalLength; // частота появления СВ
-
-                    chart1.Series[0].Points.AddXY(Math.Round(norm_distr[i], 3), y);
-
-                    j++;   //прибавляем j постфиксным инкрементом
-                    rightBorder = norm_distr.Min() + (j + 1) * intervalLength;  // вычисляем следующую границу
-                    counter = 0; //зануляем счётчик
-                }
-            }
 
 
 
@@ -114,6 +86,17 @@ namespace terver_3
             {
                 case 1:
                     {
+                        for (int i = 0; i < 500; i++)
+                        {                                                                                                   //штука для нормального распредления 
+                            for (int j = 0; j < n; j++)
+                            {
+                                double r = random.NextDouble();
+                                v += r;
+                            }
+                            z = (v - (n / 2)) / Math.Sqrt(n / 12);
+                            norm_distr.Add(z * deviation + expectation);  //моделирование СВ с нормальным законом распределения
+                            v = 0;
+                        } 
                         // Мера надёжности 0.95:
 
                         //пункт 1 - подсчёт мат. ожидания при известной дисперсии.Квантили стандартного нормального распределения вычислены через таблицы Excel
@@ -202,9 +185,6 @@ namespace terver_3
                         double intervMax500_085_4 = Math.Round(499 * S2 / 454.26323056485, 3);
                         textBox15.Text = intervMin500_085_4.ToString();
                         textBox16.Text = intervMax500_085_4.ToString();
-
-
-
                         break;
 
                     }
@@ -212,6 +192,17 @@ namespace terver_3
                     {
                         /*Выборка 50*/
 
+                        for (int i = 0; i < 50; i++)
+                        {                                                                                                   //штука для нормального распредления 
+                            for (int j = 0; j < n; j++)
+                            {
+                                double r = random.NextDouble();
+                                v += r;
+                            }
+                            z = (v - (n / 2)) / Math.Sqrt(n / 12);
+                            norm_distr.Add(z * deviation + expectation);  //моделирование СВ с нормальным законом распределения
+                            v = 0;
+                        }
                         // Мера надёжности 0.95:
 
                         //пункт 1 - подсчёт мат. ожидания при известной дисперсии.Квантили стандартного нормального распределения вычислены через таблицы Excel
@@ -234,7 +225,7 @@ namespace terver_3
                         textBox6.Text = intervMax50_095_2.ToString();
 
 
-                        //пункт 3 - подсчёт дисперсии при известном мат. ожидании.Квантили распределения ХИ - квадрат вычислены через таблицы Excel
+                        ////пункт 3 - подсчёт дисперсии при известном мат. ожидании.Квантили распределения ХИ - квадрат вычислены через таблицы Excel
 
                         double tempSum3 = 0;
                         for (int i = 0; i < 50; i++)
@@ -246,7 +237,7 @@ namespace terver_3
                         textBox9.Text = intervMin50_095_3.ToString();
                         textBox10.Text = intervMax50_095_3.ToString();
 
-                        //пункт 4 - подсчёт дисперсии при неизвестном мат. ожидании.Квантили распределения ХИ - квадрат вычислены через таблицы Excel
+                        ////пункт 4 - подсчёт дисперсии при неизвестном мат. ожидании.Квантили распределения ХИ - квадрат вычислены через таблицы Excel
                         double tempSum4 = 0;
                         for (int i = 0; i < 50; i++)
                         {
@@ -261,14 +252,14 @@ namespace terver_3
 
                         // Мера надёжности 0.85:
 
-                        //пункт 1 - подсчёт мат. ожидания при известной дисперсии
+                        ////пункт 1 - подсчёт мат. ожидания при известной дисперсии
 
                         double intervMin50_085_1 = Math.Round(norm_distr.Sum() / norm_distr.Count - Math.Sqrt(variance / 50) * 1.43953147093846, 3);   //Квантили стандартного нормального распределения вычислены через таблицы Excel
                         double intervMax50_085_1 = Math.Round(norm_distr.Sum() / norm_distr.Count + Math.Sqrt(variance / 50) * 1.43953147093846, 3);
                         textBox3.Text = intervMin50_085_1.ToString();
                         textBox4.Text = intervMax50_085_1.ToString();
 
-                        //пункт 2 - подсчёт мат. ожидания при неизвестной дисперсии
+                        ////пункт 2 - подсчёт мат. ожидания при неизвестной дисперсии
                         tempSum2 = 0;
                         for (int i = 0; i < 50; i++)
                         {
@@ -281,7 +272,7 @@ namespace terver_3
                         textBox8.Text = intervMax50_085_2.ToString();
 
 
-                        //пункт 3 - подсчёт дисперсии при известном мат. ожидании
+                        ////пункт 3 - подсчёт дисперсии при известном мат. ожидании
 
                         tempSum3 = 0;
                         for (int i = 0; i < 50; i++)
@@ -295,7 +286,7 @@ namespace terver_3
 
 
 
-                        //пункт 4 - подсчёт дисперсии при неизвестном мат. ожидании
+                        ////пункт 4 - подсчёт дисперсии при неизвестном мат. ожидании
                         tempSum4 = 0;
                         for (int i = 0; i < 50; i++)
                         {
@@ -307,34 +298,32 @@ namespace terver_3
                         textBox15.Text = intervMin50_085_4.ToString();
                         textBox16.Text = intervMax50_085_4.ToString();
                         break;
+                     
                     }
 
             }
+            chart1.Series[0].Points.Clear();
+            int intervals = (int)Math.Ceiling(1 + Math.Log(sample, 2)); //количество интервалов по правилу Стёрджеса 
+            textBox17.Text = sample.ToString();
+            norm_distr.Sort();//сортировка списка значений СВ 
 
+            double intervalLength = (norm_distr.Max() - norm_distr.Min()) / intervals, //длина интервала (ширина столбика гистограммы)
+                   rightBorder = norm_distr.Min() + intervalLength; //правая граница столбика гистограммы
 
+            for (int j = 0, i = 0, counter = 0; i < norm_distr.Count; i++, counter++)  //counter - счётчик значений, входящих в диапазон
+            {
+                if (norm_distr[i] > rightBorder || i + 1 >= u_distr.Count)  //если число не вошло в диапазон 
+                {
+                    double y = (1 / (deviation * Math.Sqrt(2 * Math.PI))) * Math.Exp((norm_distr[i] - expectation) * (norm_distr[i] - expectation) * (-1) / (2 * variance));  //(double)counter / newNormalNumb.Count / intervalLength; // частота появления СВ
 
+                    chart1.Series[0].Points.AddXY(Math.Round(norm_distr[i], 3), y);
 
-
-
+                    j++;   //прибавляем j постфиксным инкрементом
+                    rightBorder = norm_distr.Min() + (j + 1) * intervalLength;  // вычисляем следующую границу
+                    counter = 0; //зануляем счётчик
+                }
+            }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-           
-
             private void textBox1_TextChanged(object sender, EventArgs e)
             {
 
@@ -345,7 +334,9 @@ namespace terver_3
 
             }
 
-           
-        
+        private void textBox17_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

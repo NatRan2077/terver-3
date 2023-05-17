@@ -63,6 +63,7 @@
             this.maskedTextBox8 = new System.Windows.Forms.MaskedTextBox();
             this.maskedTextBox9 = new System.Windows.Forms.MaskedTextBox();
             this.maskedTextBox10 = new System.Windows.Forms.MaskedTextBox();
+            this.textBox17 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -317,11 +318,20 @@
             this.maskedTextBox10.TabIndex = 30;
             this.maskedTextBox10.Text = "<D<";
             // 
+            // textBox17
+            // 
+            this.textBox17.Location = new System.Drawing.Point(163, 421);
+            this.textBox17.Name = "textBox17";
+            this.textBox17.Size = new System.Drawing.Size(100, 22);
+            this.textBox17.TabIndex = 31;
+            this.textBox17.TextChanged += new System.EventHandler(this.textBox17_TextChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1272, 687);
+            this.Controls.Add(this.textBox17);
             this.Controls.Add(this.maskedTextBox10);
             this.Controls.Add(this.maskedTextBox9);
             this.Controls.Add(this.maskedTextBox8);
@@ -394,6 +404,7 @@
         private System.Windows.Forms.MaskedTextBox maskedTextBox8;
         private System.Windows.Forms.MaskedTextBox maskedTextBox9;
         private System.Windows.Forms.MaskedTextBox maskedTextBox10;
+        private System.Windows.Forms.TextBox textBox17;
     }
 }
 
